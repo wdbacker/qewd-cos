@@ -1,7 +1,7 @@
 {
   "name": "qewd-cos",
   "version": "1.0.0",
-  "description": "QEWD helper module to call Caché COS functions",
+  "description": "QEWD helper module for QEWD to interface to InterSystems Caché",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

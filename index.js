@@ -59,15 +59,15 @@ module.exports = {
     }
   },
 
-  doIscFunction: function(iscFunction, params, me, session) {
-    var temp = new me.documentStore.DocumentNode(_tempDataGlobal, [process.pid]);
+  doIscFunction: function(iscFunction, params, self, session) {
+    var temp = new self.documentStore.DocumentNode(_tempDataGlobal, [process.pid]);
     var sessid = (session ? session.id : '');
 
     temp.delete();
     temp.setDocument({
       params : params
     });
-    var error = me.documentStore.db.function(iscFunction, sessid);
+    var error = self.documentStore.db.function(iscFunction, sessid);
     var document = temp.getDocument(true);
     temp.delete();
     var jsonResponse = {
