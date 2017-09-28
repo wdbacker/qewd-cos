@@ -1,0 +1,27 @@
+{
+  "name": "qewd-cos",
+  "version": "1.0.0",
+  "description": "QEWD helper module to call Caché COS functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wdbacker/qewd-cos.git"
+  },
+  "keywords": [
+    "qewd",
+    "cos",
+    "intersystems",
+    "cache"
+  ],
+  "author": "Ward De Backer <ward.debacker@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/wdbacker/qewd-cos/issues"
+  },
+  "homepage": "https://github.com/wdbacker/qewd-cos#readme",
+  "dependencies": {
+  }
+}
