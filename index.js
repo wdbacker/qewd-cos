@@ -69,7 +69,6 @@ module.exports = {
     });
     var error = self.documentStore.db.function(iscFunction, sessid);
     var document = temp.getDocument(true);
-    temp.delete();
     var jsonResponse = {
       ok : ((error === '') ? true : false),
       json : document.json || document.results || {},
