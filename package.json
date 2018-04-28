@@ -1,6 +1,6 @@
 {
   "name": "qewd-cos",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "QEWD helper module to interface to InterSystems Caché",
   "main": "index.js",
   "scripts": {
