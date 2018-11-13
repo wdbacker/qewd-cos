@@ -10,7 +10,7 @@ Thanks to [Rob Tweed](https://github.com/robtweed) for providing the [QEWD](http
 
 ## Use
 
-In your QEWD handler module, you can easily use this qewd-cos module to call your own extrinsic functions in Caché:
+In your QEWD handler module, you can easily use this qewd-cos module to call your own extrinsic functions in Caché using ```doIscFunction(iscFunction, params, self, session)```:
 
 ```javascript
 var qcos = require('qewd-cos');
@@ -31,7 +31,7 @@ module.exports = {
       // save the text from the request in the ^nodeTest global (subscripted by the current timestamp)
       nodeTest.$(ts).value = incomingText;
 
-      // but if you want to use Caché Objects or SQL, just use an extrinsic function call to Caché:
+      // but if you want to use Caché Objects or SQL, you can use an extrinsic function call to Caché:
       let params = {
         id: 1,
         nodejs: "hot",
@@ -54,9 +54,9 @@ module.exports = {
   }
 };
 ```
+If needed, you can return a response directly in a ```finished()``` QEWD return call.
 
-The corresponding COS routine "jsTest.mac" in Caché is:
-
+A corresponding COS test routine "jsTest.mac" in Caché is:
 ```
 jsTest
  ;
@@ -92,19 +92,78 @@ myCosTest(sessid)
      Set n = n + 1
    }
  }
- ;save the resulting json inside the session (makes it easy to debug using QEWD monitor)
+ ;save the resulting json inside the session (makes it very easy to see the response in QEWD monitor)
  Merge $$$session(sessid,"json") = $$$jsData("json")
  Quit error
  ;
+myCosRestTest(nosessid)
+ New (nosessid)
+ 
+ Set error=""
+ Set $$$jsData("json","text")="a simple text REST response"
+ ;no saving in the session here, because most REST calls are stateless / there is no session 
+ ;Merge $$$session(sessid,"json") = $$$jsData("json")
+ Quit error
+```
+To build a JSON response from a QEWD method handler in a standardized way (without calling a Caché intrinsic function), you can use the ```jsonResponse(error, json)``` method:
+```javascript
+var error = '';
+var json = {
+  testing: true,
+  text: 'this is a test response from QEWD'
+};
+finished(qcos.jsonResponse(error, json));
+```
+You'll notice that ```doIscFunction()``` formats a response in the same way as ```jsonResponse()```, you can use its return value directly in a ```finished()``` QEWD return call.
+
+For REST calls, you can use ```restResponse(error, json)``` to format your REST response in a standardized way. 
+
+There are different possible forms you can return an error from a REST call:
+```javascript
+// just return an error string (with a default http error status 400)
+var error = 'this is an error';
+finished(qcos.restResponse(error, {}));
+
+// or first define your custom error response using QEWD's setCustomErrorResponse() method
+this.setCustomErrorResponse.call(this, {
+  application: application,
+  errorType: 'unauthorized',
+  text: 'Unauthorized',
+  statusCode: '401'
+});
+// return this custom error
+finished(qcos.restResponse.call(this, {
+  args.req.application,
+  type: 'unauthorized'
+}));
+
+// return an error with a http status code you specify:
+finished(qcos.restResponse.call(this, {
+  statusCode: 500,
+  error: 'Internal server error'
+}));
 ```
 
-And finally some very helper macro's defined in "jsHeader.inc":
+An error returned from an extrinsic function in Caché as in the example above is just a string. To allow more detailed (custom) error reporting, you can return an error string using JavaScript error template syntax, e.g. to return an error status response from a REST call in COS:
+```
+ Set error="${""statusCode"":500,""errorCode"":""ERROR_TEST"",""error"":""testing custom errors""}"
+ Quit error
+```
+Now you can call your extrinsic function and return the "error object" in QEWD:
+```javascript
+let response = qcos.doIscFunction('myCosRestTest^jsTest', params, self);
+// return the REST response immediately
+finished(response);
+```
 
+Note that the JSON "error string object" returned in JavaScript template syntax must strictly adhere to JSON syntax, as the error string is parsed using ```JSON.parse()```.
+
+And finally you'll need to create some very handy helper macro's you can define in ```jsHeader.inc```:
 ```
 jsHeader
  ;
  ;define session and jsData macro to easily access session data & Node.js data
- ;the temporary global you define here must be the same as defined in qewd-cos!
+ ;the temporary global defined here must be the same as defined in qewd-cos!
  #Def1Arg session(%subscripts) ^CacheTempEWDSession("session",%subscripts)
  #Def1Arg jsData(%subscripts) ^CacheTempEWDData($j,%subscripts)
  ;
@@ -123,7 +182,7 @@ For detailed information on how to use QEWD in its full potential, please refer 
 
 ## License
 
- Copyright (c) 2017 Stabe nv,  
+ Copyright (c) 2018 Stabe nv,  
  Hofstade, Oost-Vlaanderen, BE  
  All rights reserved
 

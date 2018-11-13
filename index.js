@@ -20,7 +20,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  28 April 2018
+  13 November 2018
 
 */
 
@@ -64,7 +64,7 @@ module.exports = {
       }
       else if (error) {
         errorObj = {
-          error: error
+          error
         }
       }
     }
@@ -86,12 +86,23 @@ module.exports = {
     temp.setDocument({
       params : params
     });
-    var error = self.documentStore.db.function(iscFunction, sessid);
+    var error = self.documentStore.db.function(iscFunction, sessid) || '';
+    var errorObj;
+    // decode error string using template literal syntax
+    if (error.startsWith('${') && error.endsWith('}')) {
+      try {
+        errorObj = JSON.parse(error.substring(1));
+        error = errorObj.error || '';
+      }
+      catch (err) {
+        errorObj = `JSON parse error in error string: ${error}`
+      }
+    }
     var document = temp.getDocument(true);
     var jsonResponse = {
       ok : ((error === '') ? true : false),
       json : document.json || document.results || {},
-      error : error,
+      error : errorObj || error,
       errors: document.errors || null,
       warnings: document.warnings || null
     };
