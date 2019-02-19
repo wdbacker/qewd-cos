@@ -20,7 +20,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  13 November 2018
+  19 February 2019
 
 */
 
@@ -61,6 +61,11 @@ module.exports = {
           },
           error: error.error || error.text || 'Unspecified Error'
         };
+        if (error.response) {
+          errorObj.error = {
+            response: error.response
+          }
+        }
       }
       else if (error) {
         errorObj = {
@@ -92,17 +97,19 @@ module.exports = {
     if (error.startsWith('${') && error.endsWith('}')) {
       try {
         errorObj = JSON.parse(error.substring(1));
-        error = errorObj.error || '';
       }
       catch (err) {
-        errorObj = `JSON parse error in error string: ${error}`
+        errorObj = {
+          error: `JSON parse error in error string: ${error}`
+        }
       }
     }
     var document = temp.getDocument(true);
     var jsonResponse = {
       ok : ((error === '') ? true : false),
       json : document.json || document.results || {},
-      error : errorObj || error,
+      error,
+      errorObj,
       errors: document.errors || null,
       warnings: document.warnings || null
     };
