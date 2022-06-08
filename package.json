@@ -1,6 +1,6 @@
 {
   "name": "qewd-cos",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "QEWD.js helper module to interface to InterSystems Caché & IRIS Data Platform",
   "main": "index.js",
   "scripts": {

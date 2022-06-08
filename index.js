@@ -91,7 +91,7 @@ module.exports = {
     temp.setDocument({
       params : params
     });
-    var error = self.documentStore.db.function(iscFunction, sessid) || '';
+    var error = (self.documentStore.db.dbx ? self.documentStore.db.dbx.function(iscFunction, sessid) : self.documentStore.db.function(iscFunction, sessid)) || '';
     var errorObj;
     // decode error string using template literal syntax
     if (error.startsWith('${') && error.endsWith('}')) {
