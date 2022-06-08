@@ -3,7 +3,7 @@
  ----------------------------------------------------------------------------
  | qewd-cos: helper module for QEWDjs                                       |
  |                                                                          |
- | Copyright (c) 2018 Stabe nv,                                             |
+ | Copyright (c) 2022 Stabe nv,                                             |
  | Hofstade, Oost-Vlaanderen,                                               |
  | All rights reserved.                                                     |
  |                                                                          |
@@ -20,7 +20,7 @@
  |  limitations under the License.                                          |
  ----------------------------------------------------------------------------
 
-  19 February 2019
+  8 June 2022
 
 */
 

@@ -182,7 +182,7 @@ For detailed information on how to use QEWD in its full potential, please refer 
 
 ## License
 
- Copyright (c) 2018 Stabe nv,  
+ Copyright (c) 2022 Stabe nv,  
  Hofstade, Oost-Vlaanderen, BE  
  All rights reserved
 
